@@ -25,19 +25,23 @@ Counter.propTypes = {
 }
 
 // Action
-const increaseAction = { type: 'increase' }
-const decreaseAction = { type: 'decrease' }
-const resetAction = { type: 'reset' }
+const INCREASE = 'increase'
+const DECREASE = 'decrease'
+const RESET = 'reset'
+
+const increaseAction = { type: INCREASE }
+const decreaseAction = { type: DECREASE }
+const resetAction = { type: RESET }
 
 // Reducer:
 function counter(state={count: 0}, action) {
   let count = state.count;
   switch(action.type){
-    case 'increase':
+    case INCREASE:
       return { count: count + 1 }
-    case 'decrease':
+    case DECREASE:
         return { count: count - 1 }
-    case 'reset':
+    case RESET:
         return { count: 0 }
     default:
       return state;
