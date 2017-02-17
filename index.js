@@ -6,11 +6,12 @@ import { Provider, connect } from 'react-redux'
 // React component
 class Counter extends Component {
   render() {
-    const { value, onIncreaseClick } = this.props
+    const { value, onIncreaseClick, onDecreaseClick } = this.props
     return (
       <div>
         <span>{value}</span>
         <button onClick={onIncreaseClick}>Increase</button>
+        <button onClick={onDecreaseClick}>Decrease</button>
       </div>
     )
   }
@@ -18,11 +19,13 @@ class Counter extends Component {
 
 Counter.propTypes = {
   value: PropTypes.number.isRequired,
-  onIncreaseClick: PropTypes.func.isRequired
+  onIncreaseClick: PropTypes.func.isRequired,
+  onDecreaseClick: PropTypes.func.isRequired
 }
 
 // Action
 const increaseAction = { type: 'increase' }
+const decreaseAction = { type: 'decrease' }
 
 // Reducer
 function counter(state = { count: 0 }, action) {
@@ -30,6 +33,8 @@ function counter(state = { count: 0 }, action) {
   switch (action.type) {
     case 'increase':
       return { count: count + 1 }
+    case 'decrease':
+        return { count: count - 1 }
     default:
       return state
   }
@@ -48,7 +53,8 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
   return {
-    onIncreaseClick: () => dispatch(increaseAction)
+    onIncreaseClick: () => dispatch(increaseAction),
+    onDecreaseClick: () => dispatch(decreaseAction)
   }
 }
 
