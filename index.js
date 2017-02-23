@@ -1,9 +1,27 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom'
-import { createStore } from 'redux';
+import { bindActionCreators, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
+import Select from 'react-select';
 
 // React component
+class BriSelect extends Component {
+    render() {
+        const { selectedValue, options, onChange } = this.props
+        return (
+            <div>
+                <Select
+                    name="form-field-name"
+                    value={selectedValue}
+                    options={options}
+                    onChange={onChange}
+                />
+                <span>{JSON.stringify(selectedValue)}</span>
+            </div>
+        );
+    }
+}
+
 class Counter extends Component {
   render() {
     const { value, onIncreaseClick, onDecreaseClick, onResetClick } = this.props
@@ -26,57 +44,57 @@ Counter.propTypes = {
 }
 
 // Action
-const INCREASE = 'increase'
-const DECREASE = 'decrease'
-const RESET = 'reset'
-
-const increaseAction = { type: INCREASE }
-const decreaseAction = { type: DECREASE }
-const resetAction = { type: RESET }
+const onChange = (selectedValue) => ({
+    type: 'change-select',
+    selectedValue: selectedValue
+});
 
 // Reducer:
-function counter(state={count: 0}, action) {
-  let count = state.count;
-  switch(action.type){
-    case INCREASE:
-      return { count: count + 1 }
-    case DECREASE:
-        return { count: count - 1 }
-    case RESET:
-        return { count: 0 }
-    default:
-      return state;
-  }
+function briselect(state={selectedValue: null}, action) {
+    switch(action.type){
+        case 'change-select':
+            return { selectedValue: action.selectedValue };
+        default:
+            return state;
+    }
 }
 
+
 // Store:
-let store = createStore(counter);
+let store = createStore(briselect)
 
 // Map Redux state to component props
 function mapStateToProps(state)  {
   return {
-    value: state.count
+    selectedValue: state.selectedValue
   };
 }
 
 // Map Redux actions to component props
+//function mapDispatchToProps(dispatch) {
+    //return {
+        //onChange: (selectedValue) => dispatch(onChange(selectedValue)),
+    //}
+//}
+
 function mapDispatchToProps(dispatch) {
-    return {
-        onIncreaseClick: () => dispatch(increaseAction),
-        onDecreaseClick: () => dispatch(decreaseAction),
-        onResetClick: () => dispatch(resetAction)
-    }
+    return bindActionCreators({onChange: onChange}, dispatch)
 }
 
 // Connected Component:
 let App = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Counter);
+)(BriSelect);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+      <App
+          options={[
+              { value: 'one', label: 'One' },
+              { value: 'two', label: 'Two' }
+          ]}
+      />
   </Provider>,
   document.getElementById('root')
 );
